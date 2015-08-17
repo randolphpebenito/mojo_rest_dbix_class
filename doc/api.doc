@@ -1,0 +1,90 @@
+R1 = Draft
+
+All API access is over HTTPS, and accessed via the https://api.gg.wyrls.net domain. 
+
+The relative path prefix /v1/ indicates that we are currently using version 1 of the API.
+
+-- Registration
+
+    HTTP Verb: POST
+        > Creates a Registration attempt in w/c it saves the msisdn and password. 
+        > Generates the ff:
+            - Sms Verification Code
+            - DateTime Expiry
+            - Ref ID
+        > Sends an sms notification along w/ the generated sms verification code.
+        > Returns the Ref ID in the requested format when successful.
+        > Returns a string describing the failure condition when unsuccessful.
+
+    Resource URL: ..../v1/register
+
+    Resource Information:
+        Request Formats          = JSON
+        Response Formats         = JSON
+        Requires Authentication  = Yes
+        Rate Limited             = Yes
+
+    Parameters:
+        msisdn (required)   -   A 12 digit mobile Number w/ 63 prefix. This also serves as your Username when you login.
+        Type: String            Ex: 639178680114 
+
+        password (required) -   Serves an authentication to User.  
+        Type: String            Ex: test1234
+
+    Example Request:
+        {
+            "msisdn" : "639178680114",
+            "password" : "test1234"
+        }
+
+        Request Syntax via Curl:
+            curl -XPOST -v 
+            \ -H "Content-Type: application/json;charset=UTF-8"
+            \ -d '{ 
+                    "msisdn":"639178680114", 
+                    "password":"test1234" 
+                  }' \ 
+            "https://api.gg.wyrls.net/v1/register"
+
+    Example Response:
+        HTTP Status Code: 200
+        {
+            "Ref Id" : "8ae8a6ea-84a5-11e3-884d-f18e8f6fb3bc"
+        }
+
+
+-- Verification Code
+
+    HTTP Verb: GET
+        > Returns an HTTP 200 OK response code and a representation of the requesting registrant/user if code is verified. 
+        > Returns a 401 status code and an error message if not.
+        > Registration successful.
+        > Upon verified, user must be automatically logged in.
+
+    Resource URL: ..../v1/verify_code
+
+    Resource Information:
+        Request Formats          = Query String
+        Response Formats         = JSON
+        Requires Authentication  = Yes
+        Rate Limited             = Yes
+
+    Parameters:
+        sms_verif_code (required)   -   A 5 character (alphanumeric) that serves as verification code of the user.
+        Type: String            Ex:  
+
+    Example Request:
+
+        Request Syntax via Curl:
+            curl -Gv "https://api.gg.wyrls.net/v1/verify_code?code=AB123"
+
+    Example Response:
+        HTTP Status Code: 200
+        {
+            "msisdn" : "63178680114"
+        }
+
+-- 
+
+
+
