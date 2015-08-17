@@ -4,9 +4,15 @@ use Mojolicious::Lite;
 # Documentation browser under "/perldoc"
 plugin 'PODRenderer';
 
+get '/login' => sub {
+    my $self = shift;
+    my $user = $self->param('username');
+    return $self->render(text => "Hello $user.");
+};
+
 get '/' => sub {
-  my $c = shift;
-  $c->render(template => 'index');
+    my $c = shift;
+    $c->render(template => 'index');
 };
 
 app->start;
